@@ -83,6 +83,13 @@ Two types of secrets are involved: the SQL Database administrator password and t
 
 To simplify the scenario, the AZD template generates a new database password each time you run `azd provision` or `azd up`, and the database connection string in the key vault is modified too. If you want to fully utilize `secretOrRandomPassword` in the [parameter file](infra/main.parameters.json) by committing the automatically generated password to the key vault the first time and reading it on subsequent `azd` commands, you must relax the networking restriction of the key vault to allow traffic from public networks. For more information, see [What is the behavior of the `secretOrRandomPassword` function?](https://learn.microsoft.com/azure/developer/azure-developer-cli/faq#what-is-the-behavior-of-the--secretorrandompassword--function).
 
-## Getting help
+## then add the mi stuff to the infrastructure.
 
-If you're working with this project and running into issues, please post in [Issues](/issues).
+https://learn.microsoft.com/en-us/azure/app-service/tutorial-connect-msi-sql-database?tabs=cli%2Cefcore%2Cdotnet
+
+## then modify the  program.cs file to look like this
+
+the code of program.cs as already been altered to work with a MI
+
+
+
