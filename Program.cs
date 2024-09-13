@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using DotNetCoreSqlDb.Data;
+using Azure.Identity;
+using Microsoft.Data.SqlClient;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add database context and cache
@@ -11,12 +13,19 @@ if(builder.Environment.IsDevelopment())
 }
 else
 {
+    var credential = new DefaultAzureCredential();
+    var connectionString = builder.Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING");
+    var sqlConnection = new SqlConnection(connectionString);
+
+    sqlConnection.AccessToken = credential.GetToken(
+        new Azure.Core.TokenRequestContext(new[] { "https://database.windows.net/.default" })).Token;
+
     builder.Services.AddDbContext<MyDatabaseContext>(options =>
-        options.UseSqlServer(builder.Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING")));
+        options.UseSqlServer(sqlConnection));
     builder.Services.AddStackExchangeRedisCache(options =>
     {
-    options.Configuration = builder.Configuration["AZURE_REDIS_CONNECTIONSTRING"];
-    options.InstanceName = "SampleInstance";
+        options.Configuration = builder.Configuration["AZURE_REDIS_CONNECTIONSTRING"];
+        options.InstanceName = "SampleInstance";
     });
 }
 
